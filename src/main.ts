@@ -113,4 +113,21 @@ app.config.globalProperties.$http = function (url : string, method : string, dat
     });
 };
 
+//封装用于判断用户是否具有某些权限的公共函数
+app.config.globalProperties.isAuth = function (permission : string[]) {
+    const permissions : string | null = localStorage.getItem('permissions');
+    if (permissions) {
+        let flag = false;
+        for (let one of permission) {
+            if (permissions.includes(one)) {
+                flag = true;
+                break;
+            }
+        }
+        return flag;
+    } else {
+        return false;
+    }
+};
+
 app.mount('#app');
