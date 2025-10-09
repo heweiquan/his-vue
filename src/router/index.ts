@@ -10,6 +10,15 @@ const routes: Array<RouteRecordRaw> = [
         path: '/mis/login',
         name: '/mis/login',
         component: () => import('../views/mis/login.vue')
+    },
+    {
+        path: '/404',
+        name: '404',
+        component: () => import('../views/404.vue')
+    },
+    {
+        path: '/:pathMath(.*)*',
+        redirect: '/404'
     }
 ];
 const router = createRouter({
