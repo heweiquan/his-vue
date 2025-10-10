@@ -176,7 +176,8 @@
     </aside>
     <div class="site-content__wrapper">
       <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
-        <el-tabs v-if="$route.meta.isTab" v-model="siteContent.mainTabsActiveName" :closable="true">
+        <el-tabs v-if="$route.meta.isTab" v-model="siteContent.mainTabsActiveName" :closable="true"
+          @tab-click="selectedTabHandle" @tab-remove="removeTabHandle">
           <el-tab-pane v-for="item in siteContent.mainTabs" :key="item.title" :label="item.title" :name="item.name">
             <el-card :body-style="siteContent.siteContentViewHeight">
               <router-view :key="router.currentRoute.value.query.random" />
@@ -310,6 +311,34 @@ watch(
   },
   { immediate: true, deep: true }
 );
+
+function selectedTabHandle(tab) {
+  router.push({
+    //想必很多同学现在才恍然大悟，为什么要用Vue页面的路由名称作为Tab面板的名字
+    name: tab.paneName
+  });
+}
+
+function removeTabHandle(tabName) {
+  //让mainTabs数组剔除要关闭的Tab
+  siteContent.mainTabs = siteContent.mainTabs.filter(item => item.name !== tabName);
+  //如果还存在剩余的Tab，就切换到最后的Tab上面
+  if (siteContent.mainTabs.length >= 1) {
+    //获取mainTabs数组最后一个元素
+    let tab = siteContent.mainTabs[siteContent.mainTabs.length - 1];
+    //选中这个Tab控件
+    siteContent.mainTabsActiveName = tab.name;
+    //内容区切换引用的页面
+    router.push({ name: tab.name });
+  } else {
+    siteContent.mainTabsActiveName = '';
+    router.push({ name: 'MisHome' });
+  }
+}
+
+function handleSwitch() {
+  sidebar.sidebarFold = !sidebar.sidebarFold;
+}
 </script>
 
 <style lang="less" scoped>
