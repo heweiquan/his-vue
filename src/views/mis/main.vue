@@ -178,12 +178,12 @@
       <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
         <el-tabs v-if="$route.meta.isTab" v-model="siteContent.mainTabsActiveName" :closable="true">
           <el-tab-pane v-for="item in siteContent.mainTabs" :key="item.title" :label="item.title" :name="item.name">
-            <el-card>
+            <el-card :body-style="siteContent.siteContentViewHeight">
               <router-view :key="router.currentRoute.value.query.random" />
             </el-card>
           </el-tab-pane>
         </el-tabs>
-        <el-card v-else>
+        <el-card v-else :body-style="siteContent.siteContentViewHeight">
           <router-view :key="router.currentRoute.value.query.random" />
         </el-card>
       </main>
@@ -233,7 +233,38 @@ const user = reactive({
   updatePasswordVisible: false
 });
 
+//计算网页可见区域的高度
+function resetDocumentClientHeight() {
+  //获取网页可见区域的高度
+  siteContent.documentClientHeight = document.documentElement.clientHeight;
+}
+
+//计算内容区卡片控件高度
+function loadSiteContentViewHeight() {
+  //卡片控件高度 = 网页可见区域高度 - 导航区高度 - 卡片控件上下外填充 - 上下边框
+  let height = siteContent.documentClientHeight - 50 - 30 - 2;
+  if (route.meta.isTab) {
+    //如果引用的Vue页面需要Tab控件，卡片控件高度还要减去40
+    height -= 40;
+  }
+  //保存卡片控件高度
+  siteContent.height = height
+  //声明CSS样式
+  siteContent.siteContentViewHeight = { minHeight: height + 'px' };
+}
+
+//浏览器尺寸发生变化的回调函数
+window.onresize = () => {
+  //更新保存的网页可见区域高度
+  siteContent.documentClientHeight = document.documentElement.clientHeight;
+  //重新计算内容区的高度
+  loadSiteContentViewHeight();
+};
+
 function routeHandle(route) {
+  //每次切换页面，重新计算页面高度和内容区高度
+  resetDocumentClientHeight();
+  loadSiteContentViewHeight();
   //判断是否要创建Tab控件
   if (route.meta.isTab) {
     /* 创建Tab控件之前，先判断mainTabs[]数组中是否存在该Vue页面的Tab控件。
