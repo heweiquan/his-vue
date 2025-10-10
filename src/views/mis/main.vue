@@ -175,14 +175,17 @@
       </div>
     </aside>
     <div class="site-content__wrapper">
-      <main class="site-content" :class="{ 'site-content--tabs': true }">
-        <el-tabs v-model="siteContent.mainTabsActiveName" :closable="true">
+      <main class="site-content" :class="{ 'site-content--tabs': $route.meta.isTab }">
+        <el-tabs v-if="$route.meta.isTab" v-model="siteContent.mainTabsActiveName" :closable="true">
           <el-tab-pane v-for="item in siteContent.mainTabs" :key="item.title" :label="item.title" :name="item.name">
             <el-card>
               <router-view :key="router.currentRoute.value.query.random" />
             </el-card>
           </el-tab-pane>
         </el-tabs>
+        <el-card v-else>
+          <router-view :key="router.currentRoute.value.query.random" />
+        </el-card>
       </main>
     </div>
   </div>
@@ -245,10 +248,17 @@ function routeHandle(route) {
       };
       siteContent.mainTabs.push(tab);
     }
-    //选中某个菜单项
-    siteContent.menuActiveName = tab.name;
     //选中某个Tab控件
     siteContent.mainTabsActiveName = tab.name;
+    //选中某个菜单项
+    siteContent.menuActiveName = tab.name;
+  }
+  else {
+    siteContent.mainTabs = []
+    //取消选中某个Tab控件
+    siteContent.mainTabsActiveName = "";
+    //选中某个菜单项
+    siteContent.menuActiveName = "Home";
   }
 }
 
