@@ -48,15 +48,13 @@
               </el-icon>
               <span slot="title">组织管理</span>
             </template>
-            <el-menu-item index="MisDept" 
-              @click="$router.push({ name: 'MisDept' })">
+            <el-menu-item index="MisDept" @click="$router.push({ name: 'MisDept' })">
               <el-icon>
                 <SvgIcon name="company_fill" class="icon-svg" />
               </el-icon>
               <span slot="title">部门管理</span>
             </el-menu-item>
-            <el-menu-item index="MisRole" 
-              @click="$router.push({ name: 'MisRole' })">
+            <el-menu-item index="MisRole" @click="$router.push({ name: 'MisRole' })">
               <el-icon>
                 <SvgIcon name="role_fill" class="icon-svg" />
               </el-icon>
@@ -178,8 +176,8 @@
     </aside>
     <div class="site-content__wrapper">
       <main class="site-content" :class="{ 'site-content--tabs': true }">
-        <el-tabs>
-          <el-tab-pane label="标签1" name="Tab_1">
+        <el-tabs v-model="siteContent.mainTabsActiveName" :closable="true">
+          <el-tab-pane v-for="item in siteContent.mainTabs" :key="item.title" :label="item.title" :name="item.name">
             <el-card>
               <router-view :key="router.currentRoute.value.query.random" />
             </el-card>
@@ -216,8 +214,11 @@ const siteContent = reactive({
   documentClientHeight: 0,
   siteContentViewHeight: {},
   height: null,
+  //数据里面每个元素就是一个Tab
   mainTabs: [],
+  //记录当前选中的Tab标签
   mainTabsActiveName: '',
+  //记录当前选中的菜单项
   menuActiveName: ''
 });
 
@@ -228,6 +229,46 @@ const user = reactive({
   //是否显示修改登陆密码的弹窗
   updatePasswordVisible: false
 });
+
+function routeHandle(route) {
+  //判断是否要创建Tab控件
+  if (route.meta.isTab) {
+    /* 创建Tab控件之前，先判断mainTabs[]数组中是否存在该Vue页面的Tab控件。
+     * 比如我们要访问角色管理页面，程序先要判断是否存在角色管理页面的Tab控件。
+     * 如果不存在就创建Tab控件；如果存在就不创建新的Tab控件，直接切换到现有的Tab控件
+     */
+    let tab = siteContent.mainTabs.filter(item => item.name === route.name)[0];
+    if (tab == null) {
+      tab = {
+        title: route.meta.title,
+        name: route.name
+      };
+      siteContent.mainTabs.push(tab);
+    }
+    //选中某个菜单项
+    siteContent.menuActiveName = tab.name;
+    //选中某个Tab控件
+    siteContent.mainTabsActiveName = tab.name;
+  }
+}
+
+/* 
+ * 载入框架页面就立即执行routeHandle()函数，把当前路由加载页面对应的Tab控件选中
+ * 例如直接访问http://localhost:7600/mis/role页面，需要让框架页面创建Tab控件，并且选中该Tab
+ */
+routeHandle(route)
+
+/* 
+ * 框架页面的路由标签每次切换引用的页面，就调用routeHandle()，
+ * 判断一下是创建新的Tab控件，还是切换到现有的Tab控件
+ */
+watch(
+  () => router,
+  () => {
+    routeHandle(route);
+  },
+  { immediate: true, deep: true }
+);
 </script>
 
 <style lang="less" scoped>
