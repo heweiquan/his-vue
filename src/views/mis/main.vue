@@ -48,14 +48,14 @@
               </el-icon>
               <span slot="title">组织管理</span>
             </template>
-            <el-menu-item index="MisDept" v-if="proxy.isAuth(['ROOT', 'DEPT:SELECT'])"
+            <el-menu-item index="MisDept" 
               @click="$router.push({ name: 'MisDept' })">
               <el-icon>
                 <SvgIcon name="company_fill" class="icon-svg" />
               </el-icon>
               <span slot="title">部门管理</span>
             </el-menu-item>
-            <el-menu-item index="MisRole" v-if="proxy.isAuth(['ROOT', 'ROLE:SELECT'])"
+            <el-menu-item index="MisRole" 
               @click="$router.push({ name: 'MisRole' })">
               <el-icon>
                 <SvgIcon name="role_fill" class="icon-svg" />
@@ -176,8 +176,17 @@
         </el-menu>
       </div>
     </aside>
-    <!-- 避免路由引用页面的时候浏览器不刷新内容，所以给URL添加随机数参数 -->
-    <router-view :key="router.currentRoute.value.query.random" />
+    <div class="site-content__wrapper">
+      <main class="site-content" :class="{ 'site-content--tabs': true }">
+        <el-tabs>
+          <el-tab-pane label="标签1" name="Tab_1">
+            <el-card>
+              <router-view :key="router.currentRoute.value.query.random" />
+            </el-card>
+          </el-tab-pane>
+        </el-tabs>
+      </main>
+    </div>
   </div>
 </template>
 
