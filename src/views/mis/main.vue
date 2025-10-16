@@ -60,8 +60,7 @@
               </el-icon>
               <span slot="title">角色管理</span>
             </el-menu-item>
-            <el-menu-item index="MisUser" v-if="proxy.isAuth(['ROOT', 'USER:SELECT'])"
-              @click="$router.push({ name: 'MisUser' })">
+            <el-menu-item index="MisUser" @click="$router.push({ name: 'MisUser' })">
               <el-icon>
                 <SvgIcon name="user_fill" class="icon-svg" />
               </el-icon>

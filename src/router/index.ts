@@ -43,7 +43,16 @@ const routes: Array<RouteRecordRaw> = [
           title: '角色管理',
           isTab: true
         }
-      }
+      },
+      {
+        path: 'user',
+        name: 'MisUser',
+        component: () => import('../views/mis/user.vue'),
+        meta: {
+          title: '用户管理',
+          isTab: true
+        }
+      },
     ]
   },
   {
@@ -71,11 +80,12 @@ router.beforeEach((to, from, next) => {
   let token = localStorage.getItem('token');
   let fullPath = to.fullPath;
   if (fullPath.startsWith('/mis') && fullPath != '/mis/login') {
-    if (permissions == null || permissions == '' || token == null || token == '') {
-      next({ name: 'MisLogin' });
-    } else {
-      return next();
-    }
+    // if (permissions == null || permissions == '' || token == null || token == '') {
+    //   next({ name: 'MisLogin' });
+    // } else {
+    //   return next();
+    // }
+    return next();
   } else if (fullPath.startsWith('/front/customer') || fullPath.startsWith('/front/goods_snapshot')) {
     if (token == null || token == '') {
       next({ name: 'FrontIndex' });
