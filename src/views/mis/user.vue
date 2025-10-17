@@ -149,7 +149,7 @@ const data = reactive({
   selections: []
 });
 const dialog = reactive({
-  visible: true, //调试完静态页面，不要忘记恢复成false
+  visible: false,
   update: false,
   dataForm: {
     id: null,
