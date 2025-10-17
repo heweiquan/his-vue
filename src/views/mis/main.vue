@@ -338,6 +338,14 @@ function removeTabHandle(tabName) {
 function handleSwitch() {
   sidebar.sidebarFold = !sidebar.sidebarFold;
 }
+
+function logout() {
+  proxy.$http('/mis/user/logout', 'GET', null, true, function (resp) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('permissions');
+    router.push({ name: 'MisLogin' });
+  });
+}
 </script>
 
 <style lang="less" scoped>

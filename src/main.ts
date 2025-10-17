@@ -11,10 +11,10 @@ import 'virtual:svg-icons-register';
 
 //引用ElementPlus的CSS文件，否则MacOS系统会出现控件丢失样式
 import 'element-plus/dist/index.css';
-  
+
 //导入ElementUI的消息通知组件，后续定义Ajax函数中需要用到弹窗展现提示信息
 import ElementPlus from 'element-plus';
-  
+
 //为了让日历控件每周从星期一开始，所以要导入简体中文场景
 import locale from 'element-plus/lib/locale/lang/zh-CN';
 
@@ -44,7 +44,7 @@ let minioUrl = 'http://localhost:9000/his';
 app.config.globalProperties.$minioUrl = minioUrl;
 
 //封装全局Ajax公共函数
-app.config.globalProperties.$http = function (url : string, method : string, data : JSON, async : boolean, fun : Function) {
+app.config.globalProperties.$http = function (url: string, method: string, data: JSON, async: boolean, fun: Function) {
     $.ajax({
         url: baseUrl + url,
         type: method,
@@ -60,8 +60,8 @@ app.config.globalProperties.$http = function (url : string, method : string, dat
             token: localStorage.getItem('token')
         },
         async: async,
-        data: JSON.stringify(data),
-        success: function (resp : any) {
+        data: data ? JSON.stringify(data) : null,
+        success: function (resp: any) {
             if (resp.code == 200) {
                 fun(resp);
             } else {
@@ -71,14 +71,14 @@ app.config.globalProperties.$http = function (url : string, method : string, dat
                 });
             }
         },
-        error: function (e : any) {
+        error: function (e: any) {
             //ajax有语法错误的时候
             if (e.status == undefined) {
                 ElMessage.error({
                     message: '前端页面错误',
                     duration: 1200
                 });
-            } 
+            }
             else {
                 let status = e.status;
                 //没有登陆体检系统
@@ -92,7 +92,7 @@ app.config.globalProperties.$http = function (url : string, method : string, dat
                             name: 'MisLogin'
                         });
                     }
-                } 
+                }
                 else {
                     //后端没有运行，提交的数据有误，或者没有连接上后端项目
                     if (!e.hasOwnProperty('responseText')) {
@@ -100,7 +100,7 @@ app.config.globalProperties.$http = function (url : string, method : string, dat
                             message: '后端项目没有启动，或者HTTP请求类型以及参数错误',
                             duration: 1200
                         });
-                    } 
+                    }
                     else {
                         ElMessage.error({
                             message: e.responseText,
@@ -114,8 +114,8 @@ app.config.globalProperties.$http = function (url : string, method : string, dat
 };
 
 //封装用于判断用户是否具有某些权限的公共函数
-app.config.globalProperties.isAuth = function (permission : string[]) {
-    const permissions : string | null = localStorage.getItem('permissions');
+app.config.globalProperties.isAuth = function (permission: string[]) {
+    const permissions: string | null = localStorage.getItem('permissions');
     if (permissions) {
         let flag = false;
         for (let one of permission) {
