@@ -80,12 +80,11 @@ router.beforeEach((to, from, next) => {
   let token = localStorage.getItem('token');
   let fullPath = to.fullPath;
   if (fullPath.startsWith('/mis') && fullPath != '/mis/login') {
-    // if (permissions == null || permissions == '' || token == null || token == '') {
-    //   next({ name: 'MisLogin' });
-    // } else {
-    //   return next();
-    // }
-    return next();
+    if (permissions == null || permissions == '' || token == null || token == '') {
+      next({ name: 'MisLogin' });
+    } else {
+      return next();
+    }
   } else if (fullPath.startsWith('/front/customer') || fullPath.startsWith('/front/goods_snapshot')) {
     if (token == null || token == '') {
       next({ name: 'FrontIndex' });

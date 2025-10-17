@@ -39,6 +39,7 @@
 </template>
 
 <script lang="ts" setup>
+import { isUsername, isPassword } from '../../utils/validate';
 import { getCurrentInstance, reactive, ref } from 'vue';
 //当用户登陆成功后，需要使用路由对象跳转页面
 import router from '../../router/index';
@@ -57,6 +58,46 @@ const qr = reactive({
   qrCodeTimer: null,
   loginTimer: null
 });
+
+function login() {
+  if (!isUsername(loginForm.username)) {
+    proxy.$message({
+      message: '用户名不正确',
+      type: 'error',
+      duration: 1200
+    });
+  }
+  else if (!isPassword(loginForm.password)) {
+    proxy.$message({
+      message: '密码不正确',
+      type: 'error',
+      duration: 1200
+    });
+  }
+  else {
+    const data = {
+      username: loginForm.username,
+      password: loginForm.password
+    };
+    proxy.$http('/mis/user/login', 'POST', data, true, resp => {
+      if (resp.result) {
+        const permissions = resp.permissions;
+        const token = resp.token;
+        //向浏览器storage保存令牌和权限列表
+        localStorage.setItem('permissions', permissions);
+        localStorage.setItem('token', token);
+        //跳转页面
+        router.push({ name: 'MisHome' });
+      } else {
+        proxy.$message({
+          message: '登陆失败',
+          type: 'error',
+          duration: 1200
+        });
+      }
+    });
+  }
+}
 </script>
 
 <style lang="less" scoped="scoped">

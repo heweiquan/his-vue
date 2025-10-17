@@ -36,7 +36,7 @@ import $ from 'jquery';
 import { ElMessage } from 'element-plus';
 
 //后端项目的URL根路径
-let baseUrl = 'http://localhost:7700/his-api';
+let baseUrl = 'https://localhost:7700/his-api';
 app.config.globalProperties.$baseUrl = baseUrl; //设置全局变量$baseUrl
 
 //Minio服务器地址
